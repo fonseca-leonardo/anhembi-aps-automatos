@@ -2,4 +2,4 @@ from classes.CheckVariableDeclaration import CheckVariableDeclaration
 
 init = CheckVariableDeclaration()
 
-init.execute('A1124121 = 2501.52;')
+init.execute('A1_124121 = A250152 ; ')

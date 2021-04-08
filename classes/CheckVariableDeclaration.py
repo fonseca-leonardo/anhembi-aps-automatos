@@ -11,6 +11,12 @@ class CheckVariableDeclaration:
             else:
                 del varValue[-1]
 
+            for i in range(len(varValue) - 1, 0, -1):
+                if(varValue[i] == ' '):
+                    del varValue[i]
+                else:
+                    break
+
             if(not self.__checkIsVarName(varNameWithoutSpace)):
                 raise Exception("Precisa ser Letras")
 
@@ -73,7 +79,7 @@ class CheckVariableDeclaration:
         return char.isupper()
 
     def __checkLowerCaseLetter(self, char: str):
-        return char.islower()
+        return char.islower() or char == '_'
 
     def __checkNumber(self, char):
         numbers = '0123456789'
