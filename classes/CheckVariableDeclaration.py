@@ -1,16 +1,23 @@
 class CheckVariableDeclaration:
     def execute(self, declaration):
         try:
-            [varName, varValue] = declaration.split('=')
-            varNameCharSet = list(varName)
-            if(not self.__checkCapitalLetter(varNameCharSet[0])):
-                raise Exception('PRECISA COMEÇAR COM LETRA MAIÚSCULA.')
+            [varName, varValueWithSemiColon] = declaration.split('=')
+            varNameWithoutSpace = varName.strip()
+            varValueWithoutSpace = varValueWithSemiColon.strip()
+            varValue = list(varValueWithoutSpace)
 
-            for varNameChar in range(1,varNameCharSet):
-                if(self.__checkLowerCaseLetter(varNameChar) or self.__checkNumber(varNameChar)):
-                    print("A")
+            if(not self.__semiColon(varValue[-1])):
+                raise Exception("Precisa ter ponto e vírgula no final.")
+            else:
+                del varValue[-1]
 
+            if(not self.__checkIsVarName(varNameWithoutSpace)):
+                raise Exception("Precisa ser Letras")
 
+            if(not self.__checkIsVarValue(varValue)):
+                raise Exception("Precisa ser Letra ou so numero")
+
+            print("Aceito.")
 
         except Exception as e:
             print(e)
@@ -18,28 +25,55 @@ class CheckVariableDeclaration:
     def __checkEqualSign(self, char):
         print("Sinal de igual \n")
 
-    def __checkCapitalLetter(self, char):
-       capitalLetters = 'ABCDEFGHIJKLMNOPQRSTUVXWYZ'
-       isCapitalLetter = False
+    def __checkIsVarName(self, charset):
+        varNameCharSet = list(charset)
 
-       for letter in list(capitalLetters):
-           if(char == letter):
-               isCapitalLetter = True
-               break
-        
-       return isCapitalLetter
+        isString = False
 
+        if(not self.__checkCapitalLetter(varNameCharSet[0])):
+            raise Exception('Precisa começar com letra maiúscula.')
 
-    def __checkLowerCaseLetter(self, char):
-        lowerCaseLetters = 'ABCDEFGHIJKLMNOPQRSTUVXWYZ'.lower()
-        isLowerCaseLetter = False
+        del varNameCharSet[0]
 
-        for letter in list(capitalLetters):
-            if(char == letter):
-                isLowerCaseLetter = True
-                break
-        
-        return isLowerCaseLetter
+        for varNameChar in varNameCharSet:
+            if(self.__checkLowerCaseLetter(varNameChar) or self.__checkNumber(varNameChar)):
+                isString = True
+            else:
+                raise Exception('Sem caracteres especiais.')
+
+        return isString
+
+    def __checkIsVarValue(self, charset):
+        isStringOrNumber = False
+
+        if(not self.__checkNumber(charset[0])):
+
+            if(self.__checkIsVarName(charset)):
+                isStringOrNumber = True
+                return isStringOrNumber
+        else:
+            dotOccurances = 0
+            for char in charset:
+                if(char == '.'):
+                    dotOccurances += 1
+                else:
+                    if(self.__checkNumber(char)):
+                        isStringOrNumber = True
+                    else:
+                        raise Exception(
+                            'Não pode ter letra no meio do número.')
+
+            if(dotOccurances > 1):
+                isStringOrNumber = False
+                return isStringOrNumber
+
+        return isStringOrNumber
+
+    def __checkCapitalLetter(self, char: str):
+        return char.isupper()
+
+    def __checkLowerCaseLetter(self, char: str):
+        return char.islower()
 
     def __checkNumber(self, char):
         numbers = '0123456789'
@@ -49,9 +83,13 @@ class CheckVariableDeclaration:
             if(number == char):
                 isNumber = True
                 break
-        
+
         return isNumber
 
+    def __semiColon(self, char):
+        isSemiColon = False
 
-    def __semiColumn(self, char):
-        print("Ponto e vírgula \n")
+        if(char == ';'):
+            isSemiColon = True
+
+        return isSemiColon
